@@ -3,11 +3,12 @@ import 'dart:ui';
 import 'package:xml/xml.dart';
 import 'package:path_drawing/path_drawing.dart';
 import 'package:vector_math/vector_math_64.dart';
-
+import 'package:flutter/painting.dart' as painting;
 import 'parsers/parsers.dart';
 import 'parsers/xml_parsers.dart';
 
 typedef Path SvgPathFactory(XmlElement el);
+
 final Map<String, SvgPathFactory> _shapes = {
   'circle': (el) => pathFromSvgCircle(el),
   'path': (el) => pathFromSvgPath(el),
@@ -21,7 +22,9 @@ final Map<String, SvgPathFactory> _shapes = {
 
 class SvgElement {
   final String name;
+
   const SvgElement(this.name);
+
   void draw(Canvas canvas, [Paint parentPaint]) {}
 
   factory SvgElement.fromXml(XmlElement el) {
@@ -46,9 +49,24 @@ class SvgShape extends SvgElement {
 
   @override
   void draw(Canvas canvas, [Paint parentPaint]) {
+    Color colorVector = new painting.Color.fromARGB(255, 100, 200, 255);
+
     if (parentPaint != null) {
+//      parentPaint.color = colorVector;
       canvas.drawPath(path, parentPaint);
       return;
+    }
+
+    if (stroke != null) {
+//      stroke.color = colorVector;
+    }
+
+    if (fill != null) {
+      painting.Color fillColor = fill.color;
+      print('Color is ${fillColor.blue} ${fillColor.red} ${fillColor
+          .green} / ${fillColor.alpha}');
+      if (fillColor == new painting.Color.fromARGB(255, 0, 0, 0))
+        fill.color = colorVector;
     }
     if (stroke != null) canvas.drawPath(path, stroke);
     if (fill != null) canvas.drawPath(path, fill);
@@ -68,6 +86,7 @@ class SvgGroup extends SvgElement {
   final Paint stroke;
   final Paint fill;
   final Matrix4 transform;
+
   const SvgGroup(this.children, this.transform, this.stroke, this.fill)
       : super('g');
 

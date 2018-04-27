@@ -34,6 +34,7 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       theme: new ThemeData(
         primarySwatch: Colors.blue,
+        iconTheme: new IconThemeData(color:Colors.blue)
       ),
       home: new MyHomePage(title: 'Flutter SVG Demo'),
     );
@@ -43,6 +44,11 @@ class MyApp extends StatelessWidget {
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key key, this.title}) : super(key: key);
   final String title;
+
+  factory MyHomePage.forDesignTime() {
+    // TODO: add arguments
+    return new MyHomePage();
+  }
 
   @override
   _MyHomePageState createState() => new _MyHomePageState();
